@@ -46,7 +46,7 @@ from sensor_msgs import point_cloud2
 
 from scipy.spatial.distance import dice
 
-from message_filter import BagMessageFilter
+from .message_filter import BagMessageFilter
 
 class SnapshotHandler():
 

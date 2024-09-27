@@ -50,11 +50,11 @@ sensors:
       frame: fssim/vehicle/base_link      # Frame the cones are represented in
     rate: 10                              # Publishing frequency [Hz]
     delay: 
-      time: 0.1                           # Delay [s]
+      time: 0.2                           # Delay [s]
       noise_sigma: 0.002                  # Additive gassian noise on delay 
     cut_cones_below_x:            -1 #2.2 #-1     # Cut cones that are further than this distance in x car axis
 
-    observation_radius:           15.0 #11.3 #15.0    # Below this threshold we can observe cones [m]
+    observation_radius:           25.0 #11.3 #15.0    # Below this threshold we can observe cones [m]
     distance_dependent_observation: 100.0 #25.0 # 100.0 # The probability of observation decreases with factor = -1/distance_dependent_misclass * r + 1
     observation_likelihood_left:  1.0     # Likelihood of observing left              [0..1]
     observation_likelihood_right: 1.0     # Likelihood of observing right             [0..1]
@@ -82,7 +82,7 @@ sensors:
     overwrite:
       enabled: true
       frame: fssim/vehicle/base_link              # Frame the cones are represented in
-    rate: 10 #20 #10                              # Publishing frequency [Hz]
+    rate: 30 #10                                  # Publishing frequency [Hz]
     delay: 
       time: 0.1                           # Delay [s]
       noise_sigma: 0.002 #0.002                  # Additive gassian noise on delay 

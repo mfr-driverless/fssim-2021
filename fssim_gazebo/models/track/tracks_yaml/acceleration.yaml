@@ -160,7 +160,7 @@ cones_right:
   - -1.9
 starting_pose_front_wing:
 - -2.0
-- 0.0
+- 0.5
 - 0.087
 tk_device:
 - - 0.0

@@ -29,8 +29,8 @@ from PyQt5 import QtGui, QtCore
 from PyQt5.QtGui import QColor, QPen, QBrush
 from PyQt5.QtCore import *
 
-from track import *
-from snapshot_handler import *
+from .track import *
+from .snapshot_handler import *
 
 
 class TrackViewScene(QGraphicsScene):

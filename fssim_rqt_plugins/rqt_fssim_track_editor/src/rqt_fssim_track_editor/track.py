@@ -45,8 +45,8 @@ from sensor_msgs import point_cloud2
 
 from scipy.spatial.distance import dice
 
-from skidpad import *
-from acceleration import *
+from .skidpad import *
+from .acceleration import *
 
 import os
 

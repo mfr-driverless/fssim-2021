@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 # AMZ-Driverless
 # Copyright (c) 2018 Authors:
 #   - Juraj Kabzan <kabzanj@gmail.com>
@@ -36,7 +38,7 @@ from PyQt5 import QtGui, QtCore
 from PyQt5.QtWidgets import QFileDialog
 from PyQt5.QtWebKit import *
 
-from cone_editor import *
+from .cone_editor import *
 
 class TrackEditorPlugin(Plugin):
 
