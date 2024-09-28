@@ -81,8 +81,8 @@ void Axle<WheelType>::getFy(const State &x, const Input &u, const double Fz, Axl
 
     const double Fz_axle = getDownForce(Fz);
 
-    Fy.left  = wheel_l_.getFy(alphaL, Fz_axle);
-    Fy.right = wheel_r_.getFy(alphaR, Fz_axle);
+    Fy.left  = wheel_l_.getFy(x, alphaL, Fz_axle);
+    Fy.right = wheel_r_.getFy(x, alphaR, Fz_axle);
 
     if (alpha != nullptr) {
         alpha->left  = alphaL;

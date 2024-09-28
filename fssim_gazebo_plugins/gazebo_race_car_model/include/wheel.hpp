@@ -60,7 +60,7 @@ class Wheel {
 
     virtual void printInfo();
 
-    double getFy(double alpha, double Fz);
+    double getFy(const State &x, double alpha, double Fz);
 
     virtual bool isSteering() { return false; }
 

@@ -64,16 +64,20 @@ struct Param {
 
     struct Tire {
         double tire_coefficient;
+        //double B;
+        //double C;
+        //double D;
+        //double E;
+        double D1;
+        double D2;
         double B;
         double C;
-        double D;
-        double E;
         void print() {
             ROS_DEBUG("Tire: \n "
+                      "\tD1: %f\n"
+                      "\tD2: %f\n"
                       "\tB: %f\n"
-                      "\tC: %f\n"
-                      "\tD: %f\n"
-                      "\tE: %f", B, C, D, E);
+                      "\tC: %f", D1, D2, B, C);
         }
     };
 
@@ -178,10 +182,14 @@ template<>
 struct convert<Param::Tire> {
     static bool decode(const Node &node, Param::Tire &cType) {
         cType.tire_coefficient = node["tire_coefficient"].as<double>();
-        cType.B = node["B"].as<double>() / cType.tire_coefficient;
+        cType.D1 = node["D1"].as<double>();
+        cType.D2 = node["D2"].as<double>();
+        cType.B = node["B"].as<double>();
         cType.C = node["C"].as<double>();
-        cType.D = node["D"].as<double>() * cType.tire_coefficient;
-        cType.E = node["E"].as<double>();
+        //cType.B = node["B"].as<double>() / cType.tire_coefficient;
+        //cType.C = node["C"].as<double>();
+        //cType.D = node["D"].as<double>() * cType.tire_coefficient;
+        //cType.E = node["E"].as<double>();
         ROS_DEBUG("LOADED Tire");
         cType.print();
         return true;
