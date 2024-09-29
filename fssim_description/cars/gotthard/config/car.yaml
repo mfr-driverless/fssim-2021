@@ -64,7 +64,7 @@ car:
   drivetrain:
     Cm1: 1500    #5000    #max kraft von bremse
     Cr0: 180     #rolling resistance
-    inertia: 0.4 # wheel_plus_packaging - was zur hölle ist das?! Anscheinend Trägheitsmoment
+    inertia: 0.4 # wheel_plus_packaging - was zur hölle ist das?! Anscheinend Trägheitsmoment/ anscheinend alles was am Rad dran ist wird gewogen/ also alles was sich dreht, Felge, Reifen, Tripode ...
     r_dyn: 0.195 #0.231 #dynamischer Radius des Rades
     nm_wheels: 4
     
