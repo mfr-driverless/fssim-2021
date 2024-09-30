@@ -30,8 +30,8 @@ car:
 
   kinematics:
     l: 1.56           #evtl auch 1.54 #1.53   # Vehicle Length [m]
-    b_F: 0.858        #1.22                   # From COG to front axle [m]
-    b_R: 0.702        #1.22                   # From COG to rear axle [m]
+    b_F: 1.22        #1.22                   # From COG to front axle [m]
+    b_R: 1.22        #1.22                   # From COG to rear axle [m]
     w_front: 0.45     #0.5                    # Percentage of weight front
     h_cg: 0.27        #0.262                  # Heights of COG [m]
 
