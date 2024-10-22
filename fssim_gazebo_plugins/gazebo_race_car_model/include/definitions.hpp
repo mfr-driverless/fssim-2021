@@ -33,11 +33,25 @@ namespace fssim {
 struct State {
 
     State operator*(const double &dt) const {
-        return {dt * x, dt * y, dt * yaw, dt * v_x, dt * v_y, dt * r, dt * a_x, dt * a_y};
+        return {dt * x, 
+                dt * y, 
+                dt * yaw, 
+                dt * v_x, 
+                dt * v_y, 
+                dt * r, 
+                dt * a_x, 
+                dt * a_y};
     }
 
     State operator+(const State &x2) const {
-        return {x + x2.x, y + x2.y, yaw + x2.yaw, v_x + x2.v_x, v_y + x2.v_y, r + x2.r, a_x + x2.a_x, a_y + x2.a_y};
+        return {x + x2.x, 
+                y + x2.y, 
+                yaw + x2.yaw, 
+                v_x + x2.v_x, 
+                v_y + x2.v_y, 
+                r + x2.r, 
+                a_x + x2.a_x,
+                a_y + x2.a_y};
     }
 
     std::stringstream &operator<<(std::stringstream &os) {

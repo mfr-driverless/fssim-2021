@@ -26,6 +26,7 @@
 
 #include "vehicle.hpp"
 #include "gazebo_utils/include/noise.hpp"
+#include "ros/ros.h"
 
 namespace gazebo {
 namespace fssim {
@@ -112,9 +113,10 @@ void Vehicle::publish(const double sim_time) {
 
 void Vehicle::update(const double dt) {
     input_.dc = car_info_.torque_ok && ros::Time::now().toSec() - time_last_cmd_ < 1.0 ? input_.dc : -1.0;
+    const double dc = state_.v_x <= 0.0 && input_.dc < 0.0 ? 0.0 : input_.dc;
 
-    double Fz = getNormalForce(state_);
-
+    const double Fz = getNormalForce(state_);
+    
     // Tire Forces
     AxleTires FyF{}, FyR{}, alphaF{}, alphaR{};
     front_axle_.getFy(state_, input_, Fz, FyF, &alphaF);
@@ -122,8 +124,21 @@ void Vehicle::update(const double dt) {
     front_axle_.setSteering(input_.delta);
 
     // Drivetrain Model
-    const double Fx   = getFx(state_, input_);
+    const double Fx   = getFx(state_, input_, Fz, wheel_speed);
     const double M_Tv = getMTv(state_, input_);
+
+    if (car_info_.torque_ok){
+        double Fy = FyR.avg() * 2.0;
+        double alpha = alphaR.avg();
+        //(Fy * param_.driveTrain.r_dyn * std::sin(input_.delta))
+        double apply_tq = dc < 0? param_.driveTrain.cm_brake: param_.driveTrain.cm1;
+        double angular_acceleration = (((dc * apply_tq) - (Fx * param_.driveTrain.r_dyn)) - (param_.driveTrain.cr0 * param_.driveTrain.r_dyn)) / param_.driveTrain.m_lon_add;//(0.5 * param_.inertia.m * param_.driveTrain.r_dyn * param_.driveTrain.r_dyn);
+        ROS_WARN("Angular Acceleration: %f", angular_acceleration);
+        wheel_speed += angular_acceleration * dt;
+        wheel_speed = std::max(std::min(190.0,wheel_speed), 0.0);
+    } 
+    
+    //ROS_WARN("wheelspeed: %f", wheel_speed);
 
     // Dynamics
     const auto x_dot_dyn  = f(state_, input_, Fx, M_Tv, FyF, FyR);
@@ -142,7 +157,7 @@ void Vehicle::update(const double dt) {
     state_pub.r += noise::getGaussianNoise(0.0, param_.sensors.noise_r_sigma);
     pub_ground_truth_.publish(state_pub);
 
-    publishCarInfo(alphaF, alphaR, FyF, FyR, Fx);
+    publishCarInfo(alphaF, alphaR, FyF, FyR, Fx, Fz, wheel_speed);
 }
 
 void Vehicle::onRes(const fssim_common::ResStateConstPtr &msg) {
@@ -255,9 +270,52 @@ void Vehicle::publishTf(const State &x) {
     }
 }
 
-double Vehicle::getFx(const State &x, const Input &u) {
-    const double dc = x.v_x <= 0.0 && u.dc < 0.0 ? 0.0 : u.dc;
-    const double Fx = dc * param_.driveTrain.cm1 - aero_.getFdrag(x) - param_.driveTrain.cr0;
+double Vehicle::getSlipRatio(const State &x, const Input &u, double wheel_speed){
+    double slip_ratio = 0.0;
+    slip_ratio = (param_.driveTrain.r_dyn * wheel_speed - x.v_x) / std::max(1e-2, x.v_x);
+
+    /*if (u.dc > 0.0) slip_ratio = 1.0 - (x.v_x/ std::max(1.0, wheel_speed * param_.driveTrain.r_dyn));
+    else slip_ratio = 1.0 - ((wheel_speed * param_.driveTrain.r_dyn) / std::max(1.0, x.v_x));*/
+
+    slip_ratio = std::max(std::min(slip_ratio, 1.0), -1.0);
+    return slip_ratio;
+}
+
+
+double Vehicle::getFx(const State &x, const Input &u, const double Fz, double wheel_speed) {
+    //const double dc = x.v_x <= 0.0 && u.dc < 0.0 ? 0.0 : u.dc;
+    //const double Fx = dc * param_.driveTrain.cm1 - aero_.getFdrag(x) - param_.driveTrain.cr0;
+    ROS_WARN("wheelspeed: %f", wheel_speed);
+    double slip_ratio = getSlipRatio(x, u, wheel_speed);
+    std::cout << "Slip: " << slip_ratio << std::endl<< std::endl;
+    ROS_WARN("Slip: %f", slip_ratio);
+    double tire_coefficient = param_.tire.tire_coefficient;
+    //if(x.x > 37.5) tire_coefficient = 1.0;
+    double b = 12 / tire_coefficient;
+    double c = -1.38;
+    double d = 0.9 * tire_coefficient;
+    double e = -0.58;
+
+    //double Fx = 22000 * slip_ratio;
+    //double Fx = Fz * u.dc * std::sin(c * std::atan(b * (1.0 - b) * slip_ratio + e * std::atan(b * slip_ratio)));
+
+    double Fx = Fz * (-d) *std::sin(c * std::atan(b * (1.0 - e) * slip_ratio + e * std::atan(b * slip_ratio)));
+    if(u.dc < 0.0) Fx = Fx * 2.0;
+    /*const double D1   = param_.tire.longitudinal_D1;
+    const double D2   = param_.tire.longitudinal_D2;
+    const double B    = param_.tire.longitudinal_B / tire_coefficient; 
+    const double C    = param_.tire.longitudinal_C;
+
+    
+    const double D    = ((D1 + D2/1000.0 * Fz) * Fz) * tire_coefficient;
+    double Fx   = ((D * std::sin(C * std::atan(B * (slip_ratio))))) * (1.0/3.0);*/ //* tire_coefficient;*/
+
+    std::cout << "Fx before Drag: " << Fx << std::endl;
+    ROS_WARN("Fx before Drag: %f", Fx);
+    
+    //Fx = Fx - aero_.getFdrag(x) - param_.driveTrain.cr0;
+    std::cout << "Fx after Drag: " << Fx << std::endl << std::endl;
+    ROS_WARN("Fx after Drag: %f", Fx);
     return Fx;
 }
 
@@ -286,7 +344,7 @@ void Vehicle::onInitialPose(const geometry_msgs::PoseWithCovarianceStamped &msg)
 }
 
 double Vehicle::getNormalForce(const State &x) {
-    return param_.inertia.g * param_.inertia.m + aero_.getFdown(x);
+    return (param_.inertia.g * param_.inertia.m) + aero_.getFdown(x);  //* (1.0 - weight_factor)) + aero_.getFdown(x);
 }
 
 void Vehicle::setModelState(const State &x) {
@@ -310,7 +368,10 @@ void Vehicle::publishCarInfo(const AxleTires &alphaF,
                              const AxleTires &alphaR,
                              const AxleTires &FyF,
                              const AxleTires &FyR,
-                             const double Fx) const {
+                             const double Fx,
+                             const double Fz,
+                             double wheel_speed
+                             ) const {
     // Publish Car Info
     fssim_common::CarInfo car_info;
     car_info.header.stamp = ros::Time::now();
@@ -332,6 +393,7 @@ void Vehicle::publishCarInfo(const AxleTires &alphaF,
     car_info.Fy_r_r = FyR.right;
 
     car_info.Fx = Fx;
+    car_info.Fz = Fz;
 
     // Add state info
     car_info.vx = state_.v_x;
@@ -340,6 +402,8 @@ void Vehicle::publishCarInfo(const AxleTires &alphaF,
 
     car_info.dc = input_.dc;
     car_info.delta = input_.delta;
+
+    car_info.wheel_speed = wheel_speed * param_.driveTrain.r_dyn;
 
     pub_car_info_.publish(car_info);
 }

@@ -93,9 +93,13 @@ class Vehicle {
                         const AxleTires &alphaR,
                         const AxleTires &FyF,
                         const AxleTires &FyR,
-                        const double Fx) const;
+                        const double Fx,
+                        const double Fz,
+                        double wheel_speed) const;
 
-    double getFx(const State &x, const Input &u);
+    double getFx(const State &x, const Input &u, const double Fz, double wheel_speed);
+
+    double getSlipRatio(const State &x, const Input &u, double wheel_speed );
 
     double getMTv(const State &x, const Input &u) const;
 
@@ -156,6 +160,7 @@ class Vehicle {
 
     // States
     State state_;
+    double wheel_speed = 0.0;
     Input input_;
     double time_last_cmd_;
 

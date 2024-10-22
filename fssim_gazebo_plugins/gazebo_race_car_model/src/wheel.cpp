@@ -64,24 +64,29 @@ void Wheel::printInfo() {
 }
 
 double Wheel::getFy(const State &state, const double alpha, const double Fz) {
-    /*const double B    = param_.B;
+    /*double tire_coefficient = param_.tire_coefficient;
+    if(state.y < 0.0) tire_coefficient = 0.9;
+
+    const double B    = param_.B / tire_coefficient;
     const double C    = param_.C;
-    const double D    = param_.D;
+    const double D    = param_.D * tire_coefficient;
     const double E    = param_.E;
     const double mu_y = D * std::sin(C * std::atan(B * (1.0 - E) * alpha + E * std::atan(B * alpha)));
     const double Fy   = Fz * mu_y;*/
     double tire_coefficient = param_.tire_coefficient;
 
-    if(state.y < 0.0) tire_coefficient = 1.0;
+    //if(state.x < 0.0) tire_coefficient = 1.15;
+    //if(state.y < 0.0) tire_coefficient = 1.15;
+    //if(state.x > 37.5) tire_coefficient = 1.0;
 
-    const double D1   = param_.D1;
-    const double D2   = param_.D2;
-    const double B    = param_.B;
-    const double C    = param_.C;
+    const double D1   = param_.lateral_D1;
+    const double D2   = param_.lateral_D2;
+    const double B    = param_.lateral_B / tire_coefficient; 
+    const double C    = param_.lateral_C;
 
     
-    const double D    = (D1 + D2/1000.0 * Fz) * Fz;
-    const double Fy   = (-(D * std::sin(C * std::atan(B * (alpha * (180.0 / M_PI))))) * (1.0/3.0)) * tire_coefficient;
+    const double D    = ((D1 + D2/1000.0 * Fz) * Fz) * tire_coefficient;
+    const double Fy   = (-(D * std::sin(C * std::atan(B * (alpha * (180.0 / M_PI) ))))) * (1.0/3.0); //* tire_coefficient;*/
 
     return Fy;
 }

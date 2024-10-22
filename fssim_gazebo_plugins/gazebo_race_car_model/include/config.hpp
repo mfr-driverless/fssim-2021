@@ -64,20 +64,25 @@ struct Param {
 
     struct Tire {
         double tire_coefficient;
-        //double B;
-        //double C;
-        //double D;
-        //double E;
-        double D1;
-        double D2;
-        double B;
+        /*double B;
         double C;
+        double D;
+        double E;*/
+        double lateral_D1;
+        double lateral_D2;
+        double lateral_B;
+        double lateral_C;
+
+        double longitudinal_D1;
+        double longitudinal_D2;
+        double longitudinal_B;
+        double longitudinal_C;
         void print() {
             ROS_DEBUG("Tire: \n "
                       "\tD1: %f\n"
                       "\tD2: %f\n"
                       "\tB: %f\n"
-                      "\tC: %f", D1, D2, B, C);
+                      "\tC: %f", lateral_D1, lateral_D2, lateral_B, lateral_C, longitudinal_D1, longitudinal_D2, longitudinal_B, longitudinal_C);
         }
     };
 
@@ -97,6 +102,7 @@ struct Param {
         double r_dyn;
         double m_lon_add;
         double cm1;
+        double cm_brake;
         double cr0;
         void print() {
             ROS_DEBUG("DriveTrain: \n "
@@ -104,7 +110,8 @@ struct Param {
                       "\tinertia: %f\n"
                       "\tr_dyn: %f\n"
                       "\tCm1: %f\n"
-                      "\tCr0: %f", nm_wheels, inertia, r_dyn, cm1, cr0);
+                      "\tCm_brake: %f\n"
+                      "\tCr0: %f", nm_wheels, inertia, r_dyn, cm1, cm_brake, cr0);
         }
     };
 
@@ -182,10 +189,21 @@ template<>
 struct convert<Param::Tire> {
     static bool decode(const Node &node, Param::Tire &cType) {
         cType.tire_coefficient = node["tire_coefficient"].as<double>();
-        cType.D1 = node["D1"].as<double>();
-        cType.D2 = node["D2"].as<double>();
-        cType.B = node["B"].as<double>();
+        cType.lateral_D1 = node["lateral"]["D1"].as<double>();
+        cType.lateral_D2 = node["lateral"]["D2"].as<double>();
+        cType.lateral_B = node["lateral"]["B"].as<double>();
+        cType.lateral_C = node["lateral"]["C"].as<double>();
+
+        cType.longitudinal_D1 = node["longitudinal"]["D1"].as<double>();
+        cType.longitudinal_D2 = node["longitudinal"]["D2"].as<double>();
+        cType.longitudinal_B  = node["longitudinal"]["B"].as<double>();
+        cType.longitudinal_C  = node["longitudinal"]["C"].as<double>();
+
+        /*cType.B = node["B"].as<double>();
         cType.C = node["C"].as<double>();
+        cType.D = node["D"].as<double>();
+        cType.E = node["E"].as<double>();*/
+        
         //cType.B = node["B"].as<double>() / cType.tire_coefficient;
         //cType.C = node["C"].as<double>();
         //cType.D = node["D"].as<double>() * cType.tire_coefficient;
@@ -216,7 +234,8 @@ struct convert<Param::DriveTrain> {
         cType.r_dyn     = node["r_dyn"].as<double>();
         cType.nm_wheels = node["nm_wheels"].as<int>();
         cType.cr0       = node["Cr0"].as<double>();
-        cType.cm1       = node["Cm1"].as<double>();
+        cType.cm1       = node["Cm1"].as<double>(); 
+        cType.cm_brake  = node["Cm_brake"].as<double>();
         cType.m_lon_add = cType.nm_wheels * cType.inertia / (cType.r_dyn * cType.r_dyn);
         ROS_DEBUG("LOADED DriveTrain");
         cType.print();

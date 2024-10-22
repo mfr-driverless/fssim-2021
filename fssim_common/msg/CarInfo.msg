@@ -29,3 +29,7 @@ float64 Fy_r_l
 float64 Fy_r_r
 
 float64 Fx
+float64 Fz
+
+float64 wheel_speed
+float64 slip

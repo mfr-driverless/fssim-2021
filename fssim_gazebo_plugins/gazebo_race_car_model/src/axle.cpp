@@ -83,6 +83,7 @@ void Axle<WheelType>::getFy(const State &x, const Input &u, const double Fz, Axl
 
     Fy.left  = wheel_l_.getFy(x, alphaL, Fz_axle);
     Fy.right = wheel_r_.getFy(x, alphaR, Fz_axle);
+    
 
     if (alpha != nullptr) {
         alpha->left  = alphaL;
@@ -107,6 +108,7 @@ void Axle<WheelType>::setLeverArm(const double _car_length, const double _weight
 template<class WheelType>
 double Axle<WheelType>::getDownForce(const double Fz) {
     double FzAxle = 0.5 * (1.0 - weight_factor_) * Fz;
+    //double FzAxle = 0.5 * Fz;
     return FzAxle;
 }
 
