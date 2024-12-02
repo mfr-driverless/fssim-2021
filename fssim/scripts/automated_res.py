@@ -50,6 +50,7 @@ from fssim.shell import *
 from fssim.statistics import *
 from fssim.ecu import *
 from fssim.vehicle_position_validate import *
+from std_msgs.msg import Float64
 
 
 def generate_track_model(track_name):
@@ -109,6 +110,7 @@ class AutomatedRes:
         self.pub_health = rospy.Publisher('/fssim/health', SimHealth, queue_size = 1)
         self.pub_mission = rospy.Publisher('/fssim/mission', Mission, queue_size = 1, latch = True)
         self.pub_initialpose = rospy.Publisher('/initialpose', PoseWithCovarianceStamped, queue_size = 1)
+        self.pub_fssim_lap_time = rospy.Publisher('/fssim/lap_time', Float64, queue_size = 1)
 
         with open(arg.config, 'r') as f:
             self.sim_config = yaml.load(f, Loader=yaml.FullLoader)
@@ -386,8 +388,15 @@ class AutomatedRes:
         :type data: Odometry
         :return: None
         '''
+        msg = Float64()
+        if len(self.statistics.lap_time) <= 0:
+            msg.data = 0.0
+        else:
+            msg.data = self.statistics.lap_time[-1]
+            
         self.statistics.update_state(data)
         self.ecu.update_state(data)
+        self.pub_fssim_lap_time.publish(msg)
 
     def callback_mission_finished(self, data):
         '''

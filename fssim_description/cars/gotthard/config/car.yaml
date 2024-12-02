@@ -64,23 +64,23 @@ car:
 
   aero:
     C_Down: # F_Downforce = C_Downforce*v_x^2; C_Downforce = a*b*c
-      a: 0
-      b: 0
-      c: 0 
-      #a: 1.22   #wahrscheinlich Luftdichte (ca. 1.225 auf Meereshöhe)
-      #b: 4.0    #Wert von Niebling #2.6    #Luftwiderstandsbeiwert (Drag Coefficient)
-      #c: 0.5    #0.6    #Stirnfläche des Fahrzeugs
+      #a: 0
+      #b: 0
+      #c: 0 
+      a: 1.22   #wahrscheinlich Luftdichte (ca. 1.225 auf Meereshöhe)
+      b: 4.0    #Wert von Niebling #2.6    #Luftwiderstandsbeiwert (Drag Coefficient)
+      c: 0.5    #0.6    #Stirnfläche des Fahrzeugs
     C_drag: # F_Drag = C_Drag*v_x^2; C_drag = a*b*c
-      a: 0
-      b: 0
-      c: 0 
-      #a: 1.22   #0.7 #wahrscheinlich Luftdichte (ca. 1.225 auf Meereshöhe)
-      #b: 1.1    #Wert von Niebling #1.4 von Nils #1.0
-      #c: 0.5    #1.0
+      #a: 0
+      #b: 0
+      #c: 0 
+      a: 1.22   #0.7 #wahrscheinlich Luftdichte (ca. 1.225 auf Meereshöhe)
+      b: 1.1    #Wert von Niebling #1.4 von Nils #1.0
+      c: 0.5    #1.0
 
   drivetrain:
     Cm1: 2000 #5000 #<-- evtl ein Fehler #4475   #5000/4 dann pro Rad    #max kraft von bremse #2200 4475
-    Cm_brake: 3000
+    Cm_brake: 5000 #3000
     Cr0: 180 #19 #180     #rolling resistance
     inertia: 0.4 #0.4 # wheel_plus_packaging - was zur hölle ist das?! Anscheinend Trägheitsmoment/ anscheinend alles was am Rad dran ist wird gewogen/ also alles was sich dreht, Felge, Reifen, Tripode ...
     r_dyn: 0.195 #0.231 #dynamischer Radius des Rades

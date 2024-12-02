@@ -133,7 +133,7 @@ void Vehicle::update(const double dt) {
         //(Fy * param_.driveTrain.r_dyn * std::sin(input_.delta))
         double apply_tq = dc < 0? param_.driveTrain.cm_brake: param_.driveTrain.cm1;
         double angular_acceleration = (((dc * apply_tq) - (Fx * param_.driveTrain.r_dyn)) - (param_.driveTrain.cr0 * param_.driveTrain.r_dyn)) / param_.driveTrain.m_lon_add;//(0.5 * param_.inertia.m * param_.driveTrain.r_dyn * param_.driveTrain.r_dyn);
-        ROS_WARN("Angular Acceleration: %f", angular_acceleration);
+        //ROS_WARN("Angular Acceleration: %f", angular_acceleration);
         wheel_speed += angular_acceleration * dt;
         wheel_speed = std::max(std::min(190.0,wheel_speed), 0.0);
     } 
@@ -285,10 +285,10 @@ double Vehicle::getSlipRatio(const State &x, const Input &u, double wheel_speed)
 double Vehicle::getFx(const State &x, const Input &u, const double Fz, double wheel_speed) {
     //const double dc = x.v_x <= 0.0 && u.dc < 0.0 ? 0.0 : u.dc;
     //const double Fx = dc * param_.driveTrain.cm1 - aero_.getFdrag(x) - param_.driveTrain.cr0;
-    ROS_WARN("wheelspeed: %f", wheel_speed);
+    //ROS_WARN("wheelspeed: %f", wheel_speed);
     double slip_ratio = getSlipRatio(x, u, wheel_speed);
     std::cout << "Slip: " << slip_ratio << std::endl<< std::endl;
-    ROS_WARN("Slip: %f", slip_ratio);
+    //ROS_WARN("Slip: %f", slip_ratio);
     double tire_coefficient = param_.tire.tire_coefficient;
     //if(x.x > 37.5) tire_coefficient = 1.0;
     double b = 12 / tire_coefficient;
@@ -311,11 +311,11 @@ double Vehicle::getFx(const State &x, const Input &u, const double Fz, double wh
     double Fx   = ((D * std::sin(C * std::atan(B * (slip_ratio))))) * (1.0/3.0);*/ //* tire_coefficient;*/
 
     std::cout << "Fx before Drag: " << Fx << std::endl;
-    ROS_WARN("Fx before Drag: %f", Fx);
+    //ROS_WARN("Fx before Drag: %f", Fx);
     
     //Fx = Fx - aero_.getFdrag(x) - param_.driveTrain.cr0;
     std::cout << "Fx after Drag: " << Fx << std::endl << std::endl;
-    ROS_WARN("Fx after Drag: %f", Fx);
+    //ROS_WARN("Fx after Drag: %f", Fx);
     return Fx;
 }
 
