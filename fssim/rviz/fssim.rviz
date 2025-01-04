@@ -29,7 +29,7 @@ Panels:
   - Class: rviz/Time
     Name: Time
     SyncMode: 0
-    SyncSource: ""
+    SyncSource: Camera Observations
 Preferences:
   PromptSaveOnExit: true
 Toolbars:
@@ -76,18 +76,65 @@ Visualization Manager:
     - Alpha: 1
       Class: rviz/RobotModel
       Collision Enabled: false
-      Enabled: false
+      Enabled: true
       Links:
         All Links Enabled: true
         Expand Joint Details: false
         Expand Link Details: false
         Expand Tree: false
         Link Tree Style: Links in Alphabetic Order
+        base_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        chassis:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        cog:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        front_center_lidar_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        left_front_wheel:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        left_rear_wheel:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        left_steering_hinge:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        right_front_wheel:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        right_rear_wheel:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        right_steering_hinge:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
       Name: RobotModel
       Robot Description: robot_description
       TF Prefix: fssim/vehicle
       Update Interval: 0
-      Value: false
+      Value: true
       Visual Enabled: true
     - Class: rviz/TF
       Enabled: true
@@ -96,6 +143,10 @@ Visualization Manager:
       Frame Timeout: 15
       Frames:
         All Enabled: true
+        base_link:
+          Value: true
+        camera:
+          Value: true
         fssim/vehicle/base_link:
           Value: true
         fssim/vehicle/chassis:
@@ -117,6 +168,10 @@ Visualization Manager:
         fssim/vehicle/right_steering_hinge:
           Value: true
         fssim_map:
+          Value: true
+        map:
+          Value: true
+        os_sensor:
           Value: true
       Marker Alpha: 1
       Marker Scale: 0.5
@@ -141,6 +196,12 @@ Visualization Manager:
                 fssim/vehicle/right_steering_hinge:
                   fssim/vehicle/right_front_wheel:
                     {}
+          map:
+            base_link:
+              camera:
+                {}
+              os_sensor:
+                {}
       Update Interval: 0
       Value: true
     - Class: rviz/MarkerArray
@@ -148,7 +209,8 @@ Visualization Manager:
       Marker Topic: /fssim/track/markers
       Name: FSSIM Track
       Namespaces:
-        {}
+        tk_start: true
+        track: true
       Queue Size: 100
       Value: true
     - Alpha: 0.5
@@ -249,7 +311,7 @@ Visualization Manager:
       Marker Topic: /fssim/GO_marker
       Name: GO Signal
       Namespaces:
-        {}
+        basic_shapes: true
       Queue Size: 100
       Value: true
     - Class: rviz/MarkerArray
@@ -257,7 +319,7 @@ Visualization Manager:
       Marker Topic: /slam/car_state
       Name: MarkerArray
       Namespaces:
-        {}
+        "": true
       Queue Size: 100
       Value: true
     - Alpha: 1
@@ -293,7 +355,7 @@ Visualization Manager:
       Marker Topic: /path_planning/full_path
       Name: MarkerArray
       Namespaces:
-        {}
+        "": true
       Queue Size: 100
       Value: true
     - Class: rviz/MarkerArray
@@ -301,23 +363,23 @@ Visualization Manager:
       Marker Topic: /path_planning/decomposition
       Name: MarkerArray
       Namespaces:
-        {}
+        "": true
       Queue Size: 100
       Value: true
     - Class: rviz/Marker
-      Enabled: true
+      Enabled: false
       Marker Topic: /path_planning/current_detection
       Name: Marker
       Namespaces:
         {}
       Queue Size: 100
-      Value: true
+      Value: false
     - Class: rviz/MarkerArray
       Enabled: true
       Marker Topic: /slam/landmark_info
       Name: MarkerArray
       Namespaces:
-        {}
+        "": true
       Queue Size: 100
       Value: true
     - Class: rviz/Marker
@@ -325,7 +387,7 @@ Visualization Manager:
       Marker Topic: /mpc/prediction
       Name: Marker
       Namespaces:
-        {}
+        "": true
       Queue Size: 100
       Value: true
     - Class: rviz/Marker
@@ -387,6 +449,38 @@ Visualization Manager:
         {}
       Queue Size: 100
       Value: true
+    - Class: rviz/Marker
+      Enabled: true
+      Marker Topic: /mpc/prediction_variance
+      Name: Marker
+      Namespaces:
+        "": true
+      Queue Size: 100
+      Value: true
+    - Class: rviz/Marker
+      Enabled: true
+      Marker Topic: /mpc/prediction_variance
+      Name: Marker
+      Namespaces:
+        "": true
+      Queue Size: 100
+      Value: true
+    - Class: rviz/MarkerArray
+      Enabled: true
+      Marker Topic: /mpc/projection
+      Name: MarkerArray
+      Namespaces:
+        "": true
+      Queue Size: 100
+      Value: true
+    - Class: rviz/MarkerArray
+      Enabled: true
+      Marker Topic: /mpc/track_boundaries
+      Name: MarkerArray
+      Namespaces:
+        "": true
+      Queue Size: 100
+      Value: true
   Enabled: true
   Global Options:
     Background Color: 255; 255; 255
@@ -415,7 +509,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/ThirdPersonFollower
-      Distance: 28.20660400390625
+      Distance: 23.1751766204834
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
@@ -431,9 +525,9 @@ Visualization Manager:
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.6597970724105835
+      Pitch: 0.6847968101501465
       Target Frame: fssim/vehicle/base_link
-      Yaw: 3.123670816421509
+      Yaw: 3.128671646118164
     Saved: ~
 Window Geometry:
   Displays:

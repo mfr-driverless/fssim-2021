@@ -71,6 +71,7 @@ double Wheel::getFy(const State &state, const double alpha, const double Fz) {
     const double mu_y = D * std::sin(C * std::atan(B * (1.0 - E) * alpha + E * std::atan(B * alpha)));
     const double Fy   = Fz * mu_y;*/
     double tire_coefficient = param_.tire_coefficient;
+    if(state.y < 0.0) tire_coefficient = 0.8;
 
     if(state.y < 0.0) tire_coefficient = 1.0;
 

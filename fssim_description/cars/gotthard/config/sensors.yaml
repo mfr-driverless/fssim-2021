@@ -52,7 +52,7 @@ sensors:
     delay: 
       time: 0.2                           # Delay [s]
       noise_sigma: 0.002                  # Additive gassian noise on delay 
-    cut_cones_below_x:            -1 #2.2 #-1     # Cut cones that are further than this distance in x car axis
+    cut_cones_below_x:            1 #2.2 #-1     # Cut cones that are further than this distance in x car axis
 
     observation_radius:           25.0 #11.3 #15.0    # Below this threshold we can observe cones [m]
     distance_dependent_observation: 100.0 #25.0 # 100.0 # The probability of observation decreases with factor = -1/distance_dependent_misclass * r + 1
